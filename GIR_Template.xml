@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GLOBE_OECD
+    xmlns:globe="urn:oecd:globeschema:v1"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="urn:oecd:globeschema:v1 schema/GLOBE_OECD.xsd">
+
+  <!-- ========================= -->
+  <!--        HEADER BLOCK        -->
+  <!-- ========================= -->
+  <globe:MessageSpec>
+    <globe:MessageRefID></globe:MessageRefID>
+    <globe:TransmittingCountry></globe:TransmittingCountry>
+    <globe:ReceivingCountry></globe:ReceivingCountry>
+    <globe:MessageType>GIR</globe:MessageType>
+    <globe:MessageTypeIndic>GIR101</globe:MessageTypeIndic>
+    <globe:ReportingPeriod></globe:ReportingPeriod>
+    <globe:Timestamp></globe:Timestamp>
+    <globe:Warning></globe:Warning>
+    <globe:Contact></globe:Contact>
+  </globe:MessageSpec>
+
+  <!-- ========================= -->
+  <!--         BODY BLOCK         -->
+  <!-- ========================= -->
+  <globe:GLOBEBody>
+
+    <!-- ===== Filing Info ===== -->
+    <globe:FilingInfo>
+      <globe:FilingCE>
+        <globe:ResCountryCode></globe:ResCountryCode>
+        <globe:Name></globe:Name>
+        <globe:TIN issuedBy="" unknown="" TypeOfTIN=""></globe:TIN>
+        <globe:Role></globe:Role>
+      </globe:FilingCE>
+
+      <globe:AccountingInfo>
+        <globe:CFSofUPE></globe:CFSofUPE>
+        <globe:FAS></globe:FAS>
+        <globe:Currency></globe:Currency>
+      </globe:AccountingInfo>
+
+      <globe:Period>
+        <globe:Start></globe:Start>
+        <globe:End></globe:End>
+      </globe:Period>
+
+      <globe:NameMNE></globe:NameMNE>
+      <globe:AdditionalInfo></globe:AdditionalInfo>
+
+      <globe:DocSpec></globe:DocSpec>
+    </globe:FilingInfo>
+
+    <!-- ===== General Section ===== -->
+    <globe:GeneralSection>
+      <globe:RecJurCode></globe:RecJurCode>
+      <globe:CorporateStructure>
+        <globe:UPE>
+          <globe:ExcludedUPE></globe:ExcludedUPE>
+          <globe:OtherUPE></globe:OtherUPE>
+          <globe:ExcludedUPEStatus></globe:ExcludedUPEStatus>
+          <globe:Art10_3_5></globe:Art10_3_5>
+          <globe:ID>
+            <globe:Name></globe:Name>
+            <globe:ResCountryCode></globe:ResCountryCode>
+            <globe:TIN issuedBy="" unknown="" TypeOfTIN=""></globe:TIN>
+            <globe:Rules></globe:Rules>
+            <globe:GlobeStatus></globe:GlobeStatus>
+          </globe:ID>
+        </globe:UPE>
+
+        <!-- Repeatable Constituent Entities -->
+        <globe:CE>
+          <globe:ID>
+            <globe:Name></globe:Name>
+            <globe:ResCountryCode></globe:ResCountryCode>
+            <globe:TIN issuedBy="" unknown="" TypeOfTIN=""></globe:TIN>
+            <globe:Rules></globe:Rules>
+            <globe:GlobeStatus></globe:GlobeStatus>
+          </globe:ID>
+          <globe:OwnershipChange></globe:OwnershipChange>
+          <globe:Ownership></globe:Ownership>
+          <globe:QIIR></globe:QIIR>
+          <globe:QUTPR></globe:QUTPR>
+        </globe:CE>
+
+        <globe:ExcludedEntity></globe:ExcludedEntity>
+        <globe:UnreportChangeCorpStr></globe:UnreportChangeCorpStr>
+      </globe:CorporateStructure>
+    </globe:GeneralSection>
+
+    <!-- ===== Summary Section ===== -->
+    <globe:Summary>
+      <globe:RecJurCode></globe:RecJurCode>
+      <globe:Jurisdiction>
+        <globe:JurisdictionName></globe:JurisdictionName>
+        <globe:Subgroup></globe:Subgroup>
+        <globe:TIN></globe:TIN>
+        <globe:TypeofSubgroup></globe:TypeofSubgroup>
+      </globe:Jurisdiction>
+      <globe:JurWithTaxingRights></globe:JurWithTaxingRights>
+      <globe:SafeHarbour></globe:SafeHarbour>
+      <globe:ETRRange></globe:ETRRange>
+      <globe:SBIE></globe:SBIE>
+      <globe:QDMTTut></globe:QDMTTut>
+      <globe:GloBETut></globe:GloBETut>
+      <globe:AdditionalDataPoint></globe:AdditionalDataPoint>
+    </globe:Summary>
+
+    <!-- ===== Jurisdiction Section ===== -->
+    <globe:JurisdictionSection>
+      <globe:RecJurCode></globe:RecJurCode>
+      <globe:Jurisdiction></globe:Jurisdiction>
+      <globe:JurWithTaxingRights></globe:JurWithTaxingRights>
+      <globe:ReportDifference></globe:ReportDifference>
+      <globe:GloBETax>
+        <globe:InitialIntActivity></globe:InitialIntActivity>
+        <globe:ETR>
+          <globe:SubGroup></globe:SubGroup>
+          <globe:Elections></globe:Elections>
+          <globe:ETRStatus>
+            <globe:ETRException></globe:ETRException>
+            <globe:ETRComputation>
+              <globe:CEComputation>
+                <globe:AdjustedFANIL></globe:AdjustedFANIL>
+                <globe:NetGlobeIncome></globe:NetGlobeIncome>
+                <globe:AdjustedIncomeTax></globe:AdjustedIncomeTax>
+                <globe:AdjustedCoveredTax></globe:AdjustedCoveredTax>
+                <globe:Elections></globe:Elections>
+              </globe:CEComputation>
+              <globe:OverallComputation></globe:OverallComputation>
+            </globe:ETRComputation>
+          </globe:ETRStatus>
+        </globe:ETR>
+      </globe:GloBETax>
+    </globe:JurisdictionSection>
+
+    <!-- ===== UTPR Attribution ===== -->
+    <globe:UTPRAttribution>
+      <globe:JurisdictionName></globe:JurisdictionName>
+      <globe:AllocatedTopUpTax></globe:AllocatedTopUpTax>
+    </globe:UTPRAttribution>
+
+  </globe:GLOBEBody>
+
+</GLOBE_OECD>
