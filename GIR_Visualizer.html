@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GIR XML Visualizer</title>
+<style>
+  body {
+    font-family: "Segoe UI", sans-serif;
+    background: #f8f9fb;
+    color: #333;
+    padding: 20px;
+  }
+  h1 {
+    text-align: center;
+    color: #004085;
+  }
+  ul { list-style-type: none; padding-left: 1.2em; }
+  li {
+    margin: 2px 0;
+    position: relative;
+  }
+  li::before {
+    content: "▸";
+    color: #007bff;
+    display: inline-block;
+    width: 1em;
+    cursor: pointer;
+  }
+  li.expanded::before { content: "▾"; }
+  li span {
+    cursor: pointer;
+    padding: 2px 4px;
+    border-radius: 3px;
+  }
+  li span:hover { background: #e9ecef; }
+</style>
+</head>
+<body>
+
+<h1>GIR XML Visualizer</h1>
+<div id="tree"></div>
+
+<script>
+async function loadXML() {
+  try {
+    const response = await fetch("GIR_Template.xml");
+    const text = await response.text();
+    const parser = new DOMParser();
+    const xml = parser.parseFromString(text, "application/xml");
+    const root = xml.documentElement;
+    const treeContainer = document.getElementById("tree");
+    treeContainer.appendChild(buildTree(root));
+    enableToggle();
+  } catch (err) {
+    document.getElementById("tree").innerText =
+      "Error loading XML: " + err.message;
+  }
+}
+
+function buildTree(node) {
+  const ul = document.createElement("ul");
+  for (const child of node.children) {
+    const li = document.createElement("li");
+    const label = document.createElement("span");
+    label.textContent = child.nodeName;
+    li.appendChild(label);
+
+    if (child.children.length > 0) {
+      li.appendChild(buildTree(child));
+    }
+    ul.appendChild(li);
+  }
+  return ul;
+}
+
+function enableToggle() {
+  const items = document.querySelectorAll("li span");
+  items.forEach((label) => {
+    const li = label.parentElement;
+    if (li.querySelector("ul")) {
+      label.addEventListener("click", () => {
+        li.classList.toggle("expanded");
+        const sub = li.querySelector("ul");
+        sub.style.display =
+          sub.style.display === "none" ? "block" : "none";
+      });
+      // start collapsed
+      li.querySelector("ul").style.display = "none";
+    }
+  });
+}
+
+loadXML();
+</script>
+
+</body>
+</html>
