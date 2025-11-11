@@ -1,0 +1,51 @@
+<script>
+const svg = d3.select("svg"),
+      margin = {top: 20, right: 120, bottom: 20, left: 120},
+      width = +svg.attr("width") - margin.left - margin.right,
+      height = +svg.attr("height") - margin.top - margin.bottom;
+
+const g = svg.append("g").attr("transform", `translate(${margin.left},${margin.top})`);
+
+const treeLayout = d3.tree().size([height, width]);
+
+const root = d3.hierarchy(treeData);
+
+treeLayout(root);
+
+// Links
+g.selectAll(".link")
+  .data(root.links())
+  .enter().append("path")
+    .attr("class", "link")
+    .attr("d", d3.linkHorizontal()
+        .x(d => d.y)
+        .y(d => d.x));
+
+// Nodes
+const node = g.selectAll(".node")
+  .data(root.descendants())
+  .enter().append("g")
+    .attr("class", d => `node ${d.data.name.replace(/\s+/g,'')}`)
+    .attr("transform", d => `translate(${d.y},${d.x})`);
+
+// Text first
+const texts = node.append("text")
+    .attr("dy", 4)
+    .attr("text-anchor", "middle")
+    .text(d => d.data.value ? `${d.data.name}: ${d.data.value}` : d.data.name);
+
+// Rectangles sized dynamically
+node.insert("rect", "text")
+    .attr("x", function(d) {
+        const textWidth = this.nextSibling.getBBox().width;
+        return -textWidth/2 - 6; // 6px padding
+    })
+    .attr("y", -12)
+    .attr("width", function(d) {
+        const textWidth = this.nextSibling.getBBox().width;
+        return textWidth + 12; // padding
+    })
+    .attr("height", 24)
+    .attr("rx", 4)
+    .attr("ry", 4);
+</script>
