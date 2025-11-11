@@ -28,24 +28,33 @@ const node = g.selectAll(".node")
     .attr("class", d => `node ${d.data.name.replace(/\s+/g,'')}`)
     .attr("transform", d => `translate(${d.y},${d.x})`);
 
-// Text first
+// Add text first
 const texts = node.append("text")
     .attr("dy", 4)
     .attr("text-anchor", "middle")
     .text(d => d.data.value ? `${d.data.name}: ${d.data.value}` : d.data.name);
 
-// Rectangles sized dynamically
-node.insert("rect", "text")
-    .attr("x", function(d) {
-        const textWidth = this.nextSibling.getBBox().width;
-        return -textWidth/2 - 6; // 6px padding
-    })
-    .attr("y", -12)
-    .attr("width", function(d) {
-        const textWidth = this.nextSibling.getBBox().width;
-        return textWidth + 12; // padding
-    })
-    .attr("height", 24)
-    .attr("rx", 4)
-    .attr("ry", 4);
+// Now that text exists, add rectangles behind
+node.each(function(d) {
+    const textElem = d3.select(this).select("text");
+    const bbox = textElem.node().getBBox();
+    d3.select(this).insert("rect", "text")
+        .attr("x", bbox.x - 6)    // 6px padding
+        .attr("y", bbox.y - 2)    // vertical padding
+        .attr("width", bbox.width + 12)
+        .attr("height", bbox.height + 4)
+        .attr("rx", 4)
+        .attr("ry", 4)
+        .attr("fill", function() {
+            const cls = d.data.name.replace(/\s+/g,'');
+            if(cls === "MessageSpec") return "#cce5ff";
+            if(cls === "GLOBEBody") return "#d4edda";
+            if(cls === "FilingInfo") return "#fff3cd";
+            if(cls === "GeneralSection") return "#f8d7da";
+            if(cls === "Summary") return "#e2e3e5";
+            return "#fff";
+        })
+        .attr("stroke", "steelblue")
+        .attr("stroke-width", 1.5);
+});
 </script>
