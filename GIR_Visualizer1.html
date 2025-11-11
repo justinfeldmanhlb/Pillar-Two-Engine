@@ -114,20 +114,16 @@ const node = g.selectAll(".node")
     .attr("transform", d => `translate(${d.y},${d.x})`);
 
 
+
 // Rectangles
 node.append("rect")
-    .attr("x", d => {
-        const textLength = (d.data.value ? `${d.data.name}: ${d.data.value}` : d.data.name).length;
-        return -textLength * 3; // adjust multiplier for padding
-    })
+    .attr("x", -80)   // was -60
     .attr("y", -12)
-    .attr("width", d => {
-        const textLength = (d.data.value ? `${d.data.name}: ${d.data.value}` : d.data.name).length;
-        return textLength * 6; // width based on text
-    })
+    .attr("width", 160) // was 120
     .attr("height", 24)
     .attr("rx", 4)
     .attr("ry", 4);
+
 
 
 // Text: show name + value
