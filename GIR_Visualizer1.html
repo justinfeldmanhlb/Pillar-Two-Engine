@@ -1,4 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>GIR XML Horizontal Tree</title>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<style>
+  .node rect {
+    fill: #fff;
+    stroke: steelblue;
+    stroke-width: 1.5px;
+  }
+  .node text {
+    font: 12px sans-serif;
+    pointer-events: none;
+  }
+  .link {
+    fill: none;
+    stroke: #ccc;
+    stroke-width: 1.5px;
+  }
+  .MessageSpec rect { fill: #cce5ff; }
+  .GLOBEBody rect { fill: #d4edda; }
+  .FilingInfo rect { fill: #fff3cd; }
+  .GeneralSection rect { fill: #f8d7da; }
+  .Summary rect { fill: #e2e3e5; }
+</style>
+</head>
+<body>
+<svg width="1200" height="800"></svg>
+
 <script>
+const treeData = {
+  name: "GLOBE_OECD",
+  children: [
+    {
+      name: "MessageSpec",
+      children: [
+        { name: "MessageRefID", value: "DE-2023-AU-001" },
+        { name: "TransmittingCountry", value: "DE" },
+        { name: "ReceivingCountry", value: "AU" },
+        { name: "MessageType", value: "GIR" },
+        { name: "MessageTypeIndic", value: "GIR101" },
+        { name: "ReportingPeriod", value: "2023-12-31" },
+        { name: "Timestamp", value: "2024-03-15T09:45:30" },
+        { name: "Warning", value: "Exchange under OECD GIR MCAA" },
+        { name: "Contact", value: "contact@company.com" }
+      ]
+    },
+    {
+      name: "GLOBEBody",
+      children: [
+        {
+          name: "FilingInfo",
+          children: [
+            { name: "FilingCE" },
+            { name: "AccountingInfo" },
+            { name: "Period" },
+            { name: "NameMNE" },
+            { name: "AdditionalInfo" },
+            { name: "DocSpec" }
+          ]
+        },
+        {
+          name: "GeneralSection",
+          children: [
+            { name: "RecJurCode" },
+            {
+              name: "CorporateStructure",
+              children: [
+                { name: "UPE" },
+                { name: "CE" },
+                { name: "ExcludedEntity" },
+                { name: "UnreportChangeCorpStr" }
+              ]
+            }
+          ]
+        },
+        { name: "Summary" },
+        { name: "JurisdictionSection" },
+        { name: "UTPRAttribution" }
+      ]
+    }
+  ]
+};
+
 const svg = d3.select("svg"),
       margin = {top: 20, right: 120, bottom: 20, left: 120},
       width = +svg.attr("width") - margin.left - margin.right,
@@ -28,33 +113,29 @@ const node = g.selectAll(".node")
     .attr("class", d => `node ${d.data.name.replace(/\s+/g,'')}`)
     .attr("transform", d => `translate(${d.y},${d.x})`);
 
-// Add text first
-const texts = node.append("text")
+
+// Rectangles
+node.append("rect")
+    .attr("x", d => {
+        const textLength = (d.data.value ? `${d.data.name}: ${d.data.value}` : d.data.name).length;
+        return -textLength * 3; // adjust multiplier for padding
+    })
+    .attr("y", -12)
+    .attr("width", d => {
+        const textLength = (d.data.value ? `${d.data.name}: ${d.data.value}` : d.data.name).length;
+        return textLength * 6; // width based on text
+    })
+    .attr("height", 24)
+    .attr("rx", 4)
+    .attr("ry", 4);
+
+
+// Text: show name + value
+node.append("text")
     .attr("dy", 4)
     .attr("text-anchor", "middle")
     .text(d => d.data.value ? `${d.data.name}: ${d.data.value}` : d.data.name);
 
-// Now that text exists, add rectangles behind
-node.each(function(d) {
-    const textElem = d3.select(this).select("text");
-    const bbox = textElem.node().getBBox();
-    d3.select(this).insert("rect", "text")
-        .attr("x", bbox.x - 6)    // 6px padding
-        .attr("y", bbox.y - 2)    // vertical padding
-        .attr("width", bbox.width + 12)
-        .attr("height", bbox.height + 4)
-        .attr("rx", 4)
-        .attr("ry", 4)
-        .attr("fill", function() {
-            const cls = d.data.name.replace(/\s+/g,'');
-            if(cls === "MessageSpec") return "#cce5ff";
-            if(cls === "GLOBEBody") return "#d4edda";
-            if(cls === "FilingInfo") return "#fff3cd";
-            if(cls === "GeneralSection") return "#f8d7da";
-            if(cls === "Summary") return "#e2e3e5";
-            return "#fff";
-        })
-        .attr("stroke", "steelblue")
-        .attr("stroke-width", 1.5);
-});
 </script>
+</body>
+</html>
