@@ -15,19 +15,26 @@
     text-align: center;
     color: #004085;
   }
+
   ul { list-style-type: none; padding-left: 1.2em; }
+
+  /* Base styling for nodes */
   li {
     margin: 2px 0;
     position: relative;
   }
-  li::before {
+
+  /* Triangle only added dynamically via JS */
+  li.has-children::before {
     content: "▸";
     color: #007bff;
     display: inline-block;
     width: 1em;
     cursor: pointer;
   }
-  li.expanded::before { content: "▾"; }
+
+  li.has-children.expanded::before { content: "▾"; }
+
   li span {
     cursor: pointer;
     padding: 2px 4px;
@@ -67,6 +74,7 @@ function buildTree(node) {
     li.appendChild(label);
 
     if (child.children.length > 0) {
+      li.classList.add("has-children"); // mark only those with kids
       li.appendChild(buildTree(child));
     }
     ul.appendChild(li);
@@ -75,19 +83,15 @@ function buildTree(node) {
 }
 
 function enableToggle() {
-  const items = document.querySelectorAll("li span");
-  items.forEach((label) => {
+  document.querySelectorAll("li.has-children > span").forEach(label => {
     const li = label.parentElement;
-    if (li.querySelector("ul")) {
-      label.addEventListener("click", () => {
-        li.classList.toggle("expanded");
-        const sub = li.querySelector("ul");
-        sub.style.display =
-          sub.style.display === "none" ? "block" : "none";
-      });
-      // start collapsed
-      li.querySelector("ul").style.display = "none";
-    }
+    const sub = li.querySelector("ul");
+    label.addEventListener("click", () => {
+      const expanded = li.classList.toggle("expanded");
+      sub.style.display = expanded ? "block" : "none";
+    });
+    // start collapsed
+    sub.style.display = "none";
   });
 }
 
