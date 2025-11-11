@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="urn:oecd:globeschema:v1"
+           xmlns:globe="urn:oecd:globeschema:v1"
+           elementFormDefault="qualified">
+
+  <!-- Root Element -->
+  <xs:element name="GLOBE_OECD">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="globe:MessageSpec"/>
+        <xs:element ref="globe:GLOBEBody"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <!-- MessageSpec -->
+  <xs:element name="MessageSpec">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="MessageRefID" type="xs:string"/>
+        <xs:element name="TransmittingCountry" type="xs:string"/>
+        <xs:element name="ReceivingCountry" type="xs:string"/>
+        <xs:element name="MessageType" type="xs:string"/>
+        <xs:element name="MessageTypeIndic" type="xs:string"/>
+        <xs:element name="ReportingPeriod" type="xs:date"/>
+        <xs:element name="Timestamp" type="xs:dateTime"/>
+        <xs:element name="Warning" type="xs:string" minOccurs="0"/>
+        <xs:element name="Contact" type="xs:string" minOccurs="0"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <!-- Placeholder for GLOBEBody -->
+  <xs:element name="GLOBEBody" type="xs:string"/>
+
+</xs:schema>
