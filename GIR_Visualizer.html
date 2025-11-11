@@ -2,101 +2,132 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GIR XML Visualizer</title>
+<title>GIR XML Horizontal Tree</title>
+<script src="https://d3js.org/d3.v7.min.js"></script>
 <style>
-  body {
-    font-family: "Segoe UI", sans-serif;
-    background: #f8f9fb;
-    color: #333;
-    padding: 20px;
+  .node rect {
+    fill: #fff;
+    stroke: steelblue;
+    stroke-width: 1.5px;
   }
-  h1 {
-    text-align: center;
-    color: #004085;
+  .node text {
+    font: 12px sans-serif;
+    pointer-events: none;
   }
-
-  ul { list-style-type: none; padding-left: 1.2em; }
-
-  /* Base styling for nodes */
-  li {
-    margin: 2px 0;
-    position: relative;
+  .link {
+    fill: none;
+    stroke: #ccc;
+    stroke-width: 1.5px;
   }
-
-  /* Triangle only added dynamically via JS */
-  li.has-children::before {
-    content: "▸";
-    color: #007bff;
-    display: inline-block;
-    width: 1em;
-    cursor: pointer;
-  }
-
-  li.has-children.expanded::before { content: "▾"; }
-
-  li span {
-    cursor: pointer;
-    padding: 2px 4px;
-    border-radius: 3px;
-  }
-  li span:hover { background: #e9ecef; }
+  .MessageSpec rect { fill: #cce5ff; }
+  .GLOBEBody rect { fill: #d4edda; }
+  .FilingInfo rect { fill: #fff3cd; }
+  .GeneralSection rect { fill: #f8d7da; }
+  .Summary rect { fill: #e2e3e5; }
 </style>
 </head>
 <body>
-
-<h1>GIR XML Visualizer</h1>
-<div id="tree"></div>
+<svg width="1200" height="800"></svg>
 
 <script>
-async function loadXML() {
-  try {
-    const response = await fetch("GIR_Template.xml");
-    const text = await response.text();
-    const parser = new DOMParser();
-    const xml = parser.parseFromString(text, "application/xml");
-    const root = xml.documentElement;
-    const treeContainer = document.getElementById("tree");
-    treeContainer.appendChild(buildTree(root));
-    enableToggle();
-  } catch (err) {
-    document.getElementById("tree").innerText =
-      "Error loading XML: " + err.message;
-  }
-}
-
-function buildTree(node) {
-  const ul = document.createElement("ul");
-  for (const child of node.children) {
-    const li = document.createElement("li");
-    const label = document.createElement("span");
-    label.textContent = child.nodeName;
-    li.appendChild(label);
-
-    if (child.children.length > 0) {
-      li.classList.add("has-children"); // mark only those with kids
-      li.appendChild(buildTree(child));
+const treeData = {
+  name: "GLOBE_OECD",
+  children: [
+    {
+      name: "MessageSpec",
+      children: [
+        { name: "MessageRefID", value: "DE-2023-AU-001" },
+        { name: "TransmittingCountry", value: "DE" },
+        { name: "ReceivingCountry", value: "AU" },
+        { name: "MessageType", value: "GIR" },
+        { name: "MessageTypeIndic", value: "GIR101" },
+        { name: "ReportingPeriod", value: "2023-12-31" },
+        { name: "Timestamp", value: "2024-03-15T09:45:30" },
+        { name: "Warning", value: "Exchange under OECD GIR MCAA" },
+        { name: "Contact", value: "contact@company.com" }
+      ]
+    },
+    {
+      name: "GLOBEBody",
+      children: [
+        {
+          name: "FilingInfo",
+          children: [
+            { name: "FilingCE" },
+            { name: "AccountingInfo" },
+            { name: "Period" },
+            { name: "NameMNE" },
+            { name: "AdditionalInfo" },
+            { name: "DocSpec" }
+          ]
+        },
+        {
+          name: "GeneralSection",
+          children: [
+            { name: "RecJurCode" },
+            {
+              name: "CorporateStructure",
+              children: [
+                { name: "UPE" },
+                { name: "CE" },
+                { name: "ExcludedEntity" },
+                { name: "UnreportChangeCorpStr" }
+              ]
+            }
+          ]
+        },
+        { name: "Summary" },
+        { name: "JurisdictionSection" },
+        { name: "UTPRAttribution" }
+      ]
     }
-    ul.appendChild(li);
-  }
-  return ul;
-}
+  ]
+};
 
-function enableToggle() {
-  document.querySelectorAll("li.has-children > span").forEach(label => {
-    const li = label.parentElement;
-    const sub = li.querySelector("ul");
-    label.addEventListener("click", () => {
-      const expanded = li.classList.toggle("expanded");
-      sub.style.display = expanded ? "block" : "none";
-    });
-    // start collapsed
-    sub.style.display = "none";
-  });
-}
+const svg = d3.select("svg"),
+      margin = {top: 20, right: 120, bottom: 20, left: 120},
+      width = +svg.attr("width") - margin.left - margin.right,
+      height = +svg.attr("height") - margin.top - margin.bottom;
 
-loadXML();
+const g = svg.append("g").attr("transform", `translate(${margin.left},${margin.top})`);
+
+const treeLayout = d3.tree().size([height, width]);
+
+const root = d3.hierarchy(treeData);
+
+treeLayout(root);
+
+// Links
+g.selectAll(".link")
+  .data(root.links())
+  .enter().append("path")
+    .attr("class", "link")
+    .attr("d", d3.linkHorizontal()
+        .x(d => d.y)
+        .y(d => d.x));
+
+// Nodes
+const node = g.selectAll(".node")
+  .data(root.descendants())
+  .enter().append("g")
+    .attr("class", d => `node ${d.data.name.replace(/\s+/g,'')}`)
+    .attr("transform", d => `translate(${d.y},${d.x})`);
+
+// Rectangles
+node.append("rect")
+    .attr("x", -60)
+    .attr("y", -12)
+    .attr("width", 120)
+    .attr("height", 24)
+    .attr("rx", 4)
+    .attr("ry", 4);
+
+// Text: show name + value
+node.append("text")
+    .attr("dy", 4)
+    .attr("text-anchor", "middle")
+    .text(d => d.data.value ? `${d.data.name}: ${d.data.value}` : d.data.name);
+
 </script>
-
 </body>
 </html>
