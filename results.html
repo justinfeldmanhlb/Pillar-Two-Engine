@@ -2,46 +2,72 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Pillar Two Automation — Upload</title>
+<title>Pillar Two Results</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
-    body { font-family: Arial, sans-serif; background:#f4f4f4; padding:20px; }
-    .container { background:#fff; padding:20px; border-radius:10px; max-width:800px; margin:auto; }
-    .upload-box {
-        border:2px dashed #bbb; padding:40px; text-align:center;
-        border-radius:8px; background:#fafafa; cursor:pointer;
-    }
-    .upload-box:hover { background:#f0f0f0; }
-    .etl { display:flex; justify-content:space-between; margin-top:20px; }
-    .etl div { text-align:center; width:23%; background:#eee; padding:10px; border-radius:6px; }
-    button { padding:12px 20px; margin-top:20px; border:none;
-             background:#0047AB; color:white; border-radius:6px; cursor:pointer; }
-    button:hover { background:#003B8B; }
+body { font-family: Arial; background:#f4f4f4; padding:20px;}
+.container { max-width:1000px; margin:auto; background:#fff; padding:30px; border-radius:10px; box-shadow:0 2px 8px rgba(0,0,0,0.1);}
+h1 { color:#0047AB; margin-top:0; }
+table { width:100%; border-collapse: collapse; margin-top:20px;}
+th, td { border:1px solid #ccc; padding:10px; text-align:left; }
+.pass { color:green; font-weight:bold;}
+.fail { color:red; font-weight:bold;}
+button { padding:12px 25px; margin-top:20px; border:none; background:#0047AB; color:white; border-radius:6px; cursor:pointer; }
+button:hover { background:#003B8B; }
 </style>
 </head>
 <body>
-
 <div class="container">
-    <h1>Pillar Two Automation</h1>
-    <p>Upload structured or unstructured data for Pillar Two ETL processing.</p>
+<h1>Pillar Two Calculation Results (Demo)</h1>
 
-    <label class="upload-box">
-        <p>Drop files here or click to upload</p>
-        <input type="file" id="fileUpload" multiple style="display:none;">
-    </label>
+<div id="resultsArea"></div>
 
-    <div class="etl">
-        <div><strong>Extract</strong><br>Parse Data</div>
-        <div><strong>Transform</strong><br>Validate + Clean</div>
-        <div><strong>Calculate</strong><br>Apply Rules</div>
-        <div><strong>Load / XML</strong><br>Generate Output</div>
-    </div>
+<script>
+const results = JSON.parse(localStorage.getItem('pillarTwoResults')) || [];
 
-    <a href="results.html">
-        <button>Submit</button>
-    </a>
+function formatCurrency(val){ return "$" + val.toLocaleString(); }
+function formatPercent(val){ return (val*100).toFixed(2) + "%"; }
+
+results.forEach(entity => {
+    document.getElementById('resultsArea').innerHTML += `
+    <h2>Entity: ${entity.EntityName}</h2>
+    <table>
+        <tr><th>Field</th><th>Value</th></tr>
+        <tr><td>Jurisdiction</td><td>${entity.Jurisdiction}</td></tr>
+        <tr><td>Tax Year</td><td>${entity.TaxYear}</td></tr>
+        <tr><td>Net Income</td><td>${formatCurrency(entity.NetIncome)}</td></tr>
+        <tr><td>Current Tax</td><td>${formatCurrency(entity.CurrentTax)}</td></tr>
+        <tr><td>Deferred Tax Movements</td><td>${formatCurrency(entity.DeferredTax)}</td></tr>
+        <tr><td>GloBE Income</td><td>${formatCurrency(entity.GloBEIncome)}</td></tr>
+        <tr><td>Adjusted Covered Taxes</td><td>${formatCurrency(entity.AdjustedCoveredTaxes)}</td></tr>
+        <tr><td>ETR</td><td>${formatPercent(entity.ETR)}</td></tr>
+        <tr><td>Top-Up Tax</td><td>${formatCurrency(entity.TopUpTax)}</td></tr>
+    </table>
+    <h3>Safe Harbour Tests</h3>
+    <table>
+        <tr><th>Test</th><th>Status</th></tr>
+        <tr><td>De-Minimis Test</td><td class="pass">PASS</td></tr>
+        <tr><td>Transitional CbCR ETR</td><td class="pass">PASS</td></tr>
+        <tr><td>Routine Profits Test</td><td class="pass">PASS</td></tr>
+    </table>
+    <h3>XML Tags (for reference)</h3>
+    <table>
+        <tr><th>Field</th><th>Value</th><th>XML Tag</th></tr>
+        <tr><td>Entity Name</td><td>${entity.EntityName}</td><td>EntityName</td></tr>
+        <tr><td>Jurisdiction</td><td>${entity.Jurisdiction}</td><td>TaxJurisdiction</td></tr>
+        <tr><td>Tax Year</td><td>${entity.TaxYear}</td><td>ReportingPeriod</td></tr>
+        <tr><td>Net Income</td><td>${formatCurrency(entity.NetIncome)}</td><td>NetIncome</td></tr>
+        <tr><td>Current Tax</td><td>${formatCurrency(entity.CurrentTax)}</td><td>CurrentTax</td></tr>
+        <tr><td>Deferred Tax</td><td>${formatCurrency(entity.DeferredTax)}</td><td>DeferredTax</td></tr>
+        <tr><td>GloBE Income</td><td>${formatCurrency(entity.GloBEIncome)}</td><td>GloBEIncome</td></tr>
+        <tr><td>Adjusted Covered Taxes</td><td>${formatCurrency(entity.AdjustedCoveredTaxes)}</td><td>AdjustedCoveredTaxes</td></tr>
+        <tr><td>ETR</td><td>${formatPercent(entity.ETR)}</td><td>EffectiveTaxRate</td></tr>
+        <tr><td>Top-Up Tax</td><td>${formatCurrency(entity.TopUpTax)}</td><td>TopUpTax</td></tr>
+    </table>
+    <hr>
+    `;
+});
+</script>
 </div>
-
 </body>
 </html>
-
