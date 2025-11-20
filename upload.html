@@ -49,11 +49,11 @@ p {
 .upload-box {
     border:2px dashed #bbb;
     background:#fafafa;
-    padding:60px 20px; /* extra top/bottom padding for spacing */
+    padding:60px 20px;
     text-align:center;
     border-radius:10px;
     cursor:pointer;
-    margin-bottom:40px; /* ensures clear separation from text and ETL steps */
+    margin-bottom:40px;
     font-size:1rem;
     transition: all 0.2s ease;
     display:block;
@@ -103,6 +103,7 @@ button {
     border-radius: 6px;
     cursor: pointer;
     font-size: 1rem;
+    text-decoration: none; /* ensure no underline */
     transition: all 0.2s ease;
 }
 
@@ -121,7 +122,7 @@ button:hover {
 <div class="container">
     <p>Upload structured or unstructured data for Pillar Two ETL processing.</p>
 
-    <!-- Clear, separated upload box -->
+    <!-- Upload box still works for demo, but button is just a link -->
     <label class="upload-box">
         Drop files here or click to upload
         <input type="file" id="fileInput" multiple>
@@ -134,57 +135,9 @@ button:hover {
         <div><strong>Load / XML</strong><br>Generate Output</div>
     </div>
 
-    <button id="submitBtn">Submit</button>
+    <!-- Button as link -->
+    <a href="results.html"><button type="button">Submit</button></a>
 </div>
-
-<script>
-// Dummy ETL processing
-const dummyData = [{
-    EntityName: "Demo Entity Pty Ltd",
-    Jurisdiction: "Australia",
-    TaxYear: 2025,
-    NetIncome: 5400000,
-    CurrentTax: 789000,
-    DeferredTax: 28000,
-    QRTC: 5000,
-    RefundableCredits: 0,
-    TransferableCredits: 0,
-    ExcludedDividends: 0,
-    ExcludedEquityGains: 0,
-    IncludedRevaluationGains: 150000,
-    OtherGloBEAdjustments: 0
-}];
-
-function calculateGloBE(entity){
-    return entity.NetIncome - entity.ExcludedDividends - entity.ExcludedEquityGains
-        + entity.IncludedRevaluationGains + entity.OtherGloBEAdjustments;
-}
-
-function calculateCoveredTaxes(entity){
-    return entity.CurrentTax + entity.DeferredTax + entity.QRTC + entity.RefundableCredits
-        + entity.TransferableCredits;
-}
-
-function calculateETR(gloBE, covered){
-    return covered / gloBE;
-}
-
-function calculateTopUpTax(etr, gloBE){
-    return etr >= 0.15 ? 0 : (0.15 - etr) * gloBE;
-}
-
-document.getElementById('submitBtn').addEventListener('click', () => {
-    const processed = dummyData.map(entity => {
-        const gloBE = calculateGloBE(entity);
-        const covered = calculateCoveredTaxes(entity);
-        const etr = calculateETR(gloBE, covered);
-        const topUp = calculateTopUpTax(etr, gloBE);
-        return {...entity, GloBEIncome: gloBE, AdjustedCoveredTaxes: covered, ETR: etr, TopUpTax: topUp};
-    });
-    localStorage.setItem('pillarTwoResults', JSON.stringify(processed));
-    window.location.href = "results.html";
-});
-</script>
 
 </body>
 </html>
