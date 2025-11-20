@@ -5,21 +5,109 @@
 <title>Pillar Two Automation — Upload</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
-body { font-family: Arial, sans-serif; background: #f4f4f4; padding: 0; margin:0; }
-header { background:#0047AB; color:white; padding:15px 20px; display:flex; align-items:center; }
-header img { height:40px; margin-right:15px; }
-header h1 { font-size:1.5rem; margin:0; }
+body {
+    font-family: Arial, sans-serif;
+    background: #f4f4f4;
+    padding: 0;
+    margin: 0;
+}
 
-.container { max-width: 800px; margin:30px auto; background:#fff; padding:40px; border-radius:10px; box-shadow:0 4px 12px rgba(0,0,0,0.1); }
-p { line-height:1.6; color:#333; font-size:1rem; }
-.upload-box { border:2px dashed #bbb; background:#fafafa; padding:50px; text-align:center; border-radius:10px; cursor:pointer; position:relative; transition: all 0.2s ease; margin:30px 0; font-size:1rem; }
-.upload-box:hover { background:#f0f0f0; border-color:#0047AB; }
-.upload-box input { position:absolute; width:100%; height:100%; top:0; left:0; opacity:0; cursor:pointer; }
-.etl { display:flex; justify-content:space-between; margin-top:35px; }
-.etl div { flex:1; text-align:center; background:#eee; padding:20px 10px; border-radius:8px; margin:0 7px; transition: all 0.2s ease; }
-.etl div:hover { background:#e0e0e0; }
-button { padding:15px 30px; margin-top:30px; border:none; background:#0047AB; color:white; border-radius:6px; cursor:pointer; font-size:1rem; transition: all 0.2s ease; display:block; margin-left:auto; }
-button:hover { background:#003B8B; }
+header {
+    background:#0047AB;
+    color:white;
+    padding:15px 20px;
+    display:flex;
+    align-items:center;
+}
+
+header img {
+    height:40px;
+    margin-right:15px;
+}
+
+header h1 {
+    font-size:1.5rem;
+    margin:0;
+}
+
+.container {
+    max-width: 800px;
+    margin:30px auto;
+    background:#fff;
+    padding:40px;
+    border-radius:10px;
+    box-shadow:0 4px 12px rgba(0,0,0,0.1);
+}
+
+p {
+    line-height:1.6;
+    color:#333;
+    font-size:1rem;
+}
+
+.upload-box {
+    border:2px dashed #bbb;
+    background:#fafafa;
+    padding:50px;
+    text-align:center;
+    border-radius:10px;
+    cursor:pointer;
+    position:relative;
+    transition: all 0.2s ease;
+    margin:30px 0;
+    font-size:1rem;
+}
+
+.upload-box:hover {
+    background:#f0f0f0;
+    border-color:#0047AB;
+}
+
+.upload-box input {
+    position:absolute;
+    width:100%;
+    height:100%;
+    top:0;
+    left:0;
+    opacity:0;
+    cursor:pointer;
+}
+
+.etl {
+    display: flex;
+    gap: 10px;
+    margin-top: 35px;
+}
+
+.etl div {
+    flex: 1;
+    text-align: center;
+    background: #eee;
+    padding: 20px 10px;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.etl div:hover {
+    background: #e0e0e0;
+}
+
+button {
+    padding: 15px 30px;
+    margin: 30px auto 0 auto;
+    display: block;
+    border: none;
+    background: #0047AB;
+    color: white;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: all 0.2s ease;
+}
+
+button:hover {
+    background: #003B8B;
+}
 </style>
 </head>
 <body>
@@ -89,7 +177,7 @@ document.getElementById('submitBtn').addEventListener('click', () => {
         const covered = calculateCoveredTaxes(entity);
         const etr = calculateETR(gloBE, covered);
         const topUp = calculateTopUpTax(etr, gloBE);
-        return {...entity, GloBEIncome:gloBE, AdjustedCoveredTaxes:covered, ETR:etr, TopUpTax:topUp};
+        return {...entity, GloBEIncome: gloBE, AdjustedCoveredTaxes: covered, ETR: etr, TopUpTax: topUp};
     });
     localStorage.setItem('pillarTwoResults', JSON.stringify(processed));
     window.location.href = "results.html";
