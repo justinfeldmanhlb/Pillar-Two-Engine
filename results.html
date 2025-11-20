@@ -2,91 +2,80 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Pillar Two Automation — Upload</title>
+<title>Pillar Two Results</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
-body { font-family: Arial; background: #f4f4f4; padding: 20px; margin:0; }
-.container { max-width: 800px; margin:auto; background:#fff; padding:30px; border-radius:10px; box-shadow:0 2px 8px rgba(0,0,0,0.1); }
+body { font-family: Arial; background:#f4f4f4; padding:20px; margin:0; }
+.container { max-width:1000px; margin:auto; background:#fff; padding:30px; border-radius:10px; box-shadow:0 2px 8px rgba(0,0,0,0.1); }
 h1 { color:#0047AB; margin-top:0; }
-p { line-height:1.5; color:#333; }
-.upload-box { border:2px dashed #bbb; background:#fafafa; padding:40px; text-align:center; border-radius:8px; cursor:pointer; position:relative; margin:25px 0; }
-.upload-box:hover { background:#f0f0f0; border-color:#0047AB; }
-.upload-box input { position:absolute; width:100%; height:100%; top:0; left:0; opacity:0; cursor:pointer; }
-.etl { display:flex; justify-content:space-between; margin-top:30px; }
-.etl div { flex:1; text-align:center; background:#eee; padding:15px 10px; border-radius:6px; margin:0 5px; }
-.etl div:first-child { margin-left:0; }
-.etl div:last-child { margin-right:0; }
-button { padding:12px 25px; margin-top:25px; border:none; background:#0047AB; color:white; border-radius:6px; cursor:pointer; display:block; margin-left:auto; }
+table { width:100%; border-collapse: collapse; margin-top:20px;}
+th, td { border:1px solid #ccc; padding:10px; text-align:left; }
+.pass { color:green; font-weight:bold;}
+.fail { color:red; font-weight:bold;}
+button { padding:12px 25px; margin-top:20px; border:none; background:#0047AB; color:white; border-radius:6px; cursor:pointer; }
 button:hover { background:#003B8B; }
+hr { margin:40px 0; border:none; border-top:1px solid #ccc; }
 </style>
 </head>
 <body>
 <div class="container">
-    <h1>Pillar Two Automation</h1>
-    <p>Upload structured or unstructured data for Pillar Two ETL processing.</p>
+<h1>Pillar Two Calculation Results (Demo)</h1>
+<p>Dummy ETL data calculated for demonstration. Safe Harbour tests are pass/fail placeholders.</p>
 
-    <label class="upload-box">
-        <p>Drop files here or click to upload</p>
-        <input type="file" id="fileInput" multiple>
-    </label>
-
-    <div class="etl">
-        <div><strong>Extract</strong><br>Parse Data</div>
-        <div><strong>Transform</strong><br>Validate + Clean</div>
-        <div><strong>Calculate</strong><br>Apply Rules</div>
-        <div><strong>Load / XML</strong><br>Generate Output</div>
-    </div>
-
-    <button id="submitBtn">Submit</button>
-</div>
+<div id="resultsArea"></div>
 
 <script>
-// Dummy ETL processing (frontend-only)
-const dummyData = [{
-    EntityName: "Demo Entity Pty Ltd",
-    Jurisdiction: "Australia",
-    TaxYear: 2025,
-    NetIncome: 5400000,
-    CurrentTax: 789000,
-    DeferredTax: 28000,
-    QRTC: 5000,
-    RefundableCredits: 0,
-    TransferableCredits: 0,
-    ExcludedDividends: 0,
-    ExcludedEquityGains: 0,
-    IncludedRevaluationGains: 150000,
-    OtherGloBEAdjustments: 0
-}];
+const results = JSON.parse(localStorage.getItem('pillarTwoResults')) || [];
 
-function calculateGloBE(entity){
-    return entity.NetIncome - entity.ExcludedDividends - entity.ExcludedEquityGains
-        + entity.IncludedRevaluationGains + entity.OtherGloBEAdjustments;
-}
+// Formatting helpers
+function formatCurrency(val){ return "$" + val.toLocaleString(); }
+function formatPercent(val){ return (val*100).toFixed(2) + "%"; }
 
-function calculateCoveredTaxes(entity){
-    return entity.CurrentTax + entity.DeferredTax + entity.QRTC + entity.RefundableCredits
-        + entity.TransferableCredits;
-}
+// Display results
+results.forEach(entity => {
+    document.getElementById('resultsArea').innerHTML += `
+    <h2>Entity: ${entity.EntityName}</h2>
 
-function calculateETR(gloBE, covered){
-    return covered / gloBE;
-}
+    <table>
+        <tr><th>Field</th><th>Value</th></tr>
+        <tr><td>Jurisdiction</td><td>${entity.Jurisdiction}</td></tr>
+        <tr><td>Tax Year</td><td>${entity.TaxYear}</td></tr>
+        <tr><td>Net Income</td><td>${formatCurrency(entity.NetIncome)}</td></tr>
+        <tr><td>Current Tax</td><td>${formatCurrency(entity.CurrentTax)}</td></tr>
+        <tr><td>Deferred Tax Movements</td><td>${formatCurrency(entity.DeferredTax)}</td></tr>
+        <tr><td>GloBE Income</td><td>${formatCurrency(entity.GloBEIncome)}</td></tr>
+        <tr><td>Adjusted Covered Taxes</td><td>${formatCurrency(entity.AdjustedCoveredTaxes)}</td></tr>
+        <tr><td>ETR</td><td>${formatPercent(entity.ETR)}</td></tr>
+        <tr><td>Top-Up Tax</td><td>${formatCurrency(entity.TopUpTax)}</td></tr>
+    </table>
 
-function calculateTopUpTax(etr, gloBE){
-    return etr >= 0.15 ? 0 : (0.15 - etr) * gloBE;
-}
+    <h3>Safe Harbour Tests</h3>
+    <table>
+        <tr><th>Test</th><th>Status</th></tr>
+        <tr><td>Permanent De-Minimis</td><td class="pass">PASS</td></tr>
+        <tr><td>Transitional CbCR ETR</td><td class="pass">PASS</td></tr>
+        <tr><td>Routine Profits Test</td><td class="pass">PASS</td></tr>
+    </table>
 
-document.getElementById('submitBtn').addEventListener('click', () => {
-    const processed = dummyData.map(entity => {
-        const gloBE = calculateGloBE(entity);
-        const covered = calculateCoveredTaxes(entity);
-        const etr = calculateETR(gloBE, covered);
-        const topUp = calculateTopUpTax(etr, gloBE);
-        return {...entity, GloBEIncome:gloBE, AdjustedCoveredTaxes:covered, ETR:etr, TopUpTax:topUp};
-    });
-    localStorage.setItem('pillarTwoResults', JSON.stringify(processed));
-    window.location.href = "Results.html";
+    <h3>XML Mapping Reference</h3>
+    <table>
+        <tr><th>Field</th><th>Value</th><th>XML Tag</th></tr>
+        <tr><td>Entity Name</td><td>${entity.EntityName}</td><td>EntityName</td></tr>
+        <tr><td>Jurisdiction</td><td>${entity.Jurisdiction}</td><td>TaxJurisdiction</td></tr>
+        <tr><td>Tax Year</td><td>${entity.TaxYear}</td><td>ReportingPeriod</td></tr>
+        <tr><td>Net Income</td><td>${formatCurrency(entity.NetIncome)}</td><td>NetIncome</td></tr>
+        <tr><td>Current Tax</td><td>${formatCurrency(entity.CurrentTax)}</td><td>CurrentTax</td></tr>
+        <tr><td>Deferred Tax</td><td>${formatCurrency(entity.DeferredTax)}</td><td>DeferredTax</td></tr>
+        <tr><td>GloBE Income</td><td>${formatCurrency(entity.GloBEIncome)}</td><td>GloBEIncome</td></tr>
+        <tr><td>Adjusted Covered Taxes</td><td>${formatCurrency(entity.AdjustedCoveredTaxes)}</td><td>AdjustedCoveredTaxes</td></tr>
+        <tr><td>ETR</td><td>${formatPercent(entity.ETR)}</td><td>EffectiveTaxRate</td></tr>
+        <tr><td>Top-Up Tax</td><td>${formatCurrency(entity.TopUpTax)}</td><td>TopUpTax</td></tr>
+    </table>
+    <hr>
+    `;
 });
 </script>
+</div>
 </body>
 </html>
+
