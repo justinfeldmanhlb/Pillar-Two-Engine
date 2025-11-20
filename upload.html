@@ -29,6 +29,7 @@ header h1 {
     font-size:1.5rem;
     margin:0;
 }
+
 .container {
     max-width: 800px;
     margin:30px auto;
@@ -51,26 +52,10 @@ p {
     padding:60px 20px;
     text-align:center;
     border-radius:10px;
-    cursor:pointer;
     margin-bottom:40px;
     font-size:1rem;
-    transition: all 0.2s ease;
     display:block;
-}
-
-.upload-box:hover {
-    background:#f0f0f0;
-    border-color:#0047AB;
-}
-
-.upload-box input {
-    position:absolute;
-    width:100%;
-    height:100%;
-    top:0;
-    left:0;
-    opacity:0;
-    cursor:pointer;
+    color: #666;
 }
 
 .etl {
@@ -85,11 +70,6 @@ p {
     background: #eee;
     padding: 20px 10px;
     border-radius: 8px;
-    transition: all 0.2s ease;
-}
-
-.etl div:hover {
-    background: #e0e0e0;
 }
 
 button {
@@ -102,7 +82,7 @@ button {
     border-radius: 6px;
     cursor: pointer;
     font-size: 1rem;
-    text-decoration: none; /* ensure no underline */
+    text-decoration: none;
     transition: all 0.2s ease;
 }
 
@@ -119,13 +99,12 @@ button:hover {
 </header>
 
 <div class="container">
-    <p>Upload structured or unstructured data for Pillar Two ETL processing.</p>
+    <p>Ready to proceed with Pillar Two ETL processing.</p>
 
-    <!-- Upload box still works for demo, but button is just a link -->
-    <label class="upload-box">
-        Drop files here or click to upload
-        <input type="file" id="fileInput" multiple>
-    </label>
+    <!-- Placeholder box only -->
+    <div class="upload-box">
+        Upload box placeholder (no file selection)
+    </div>
 
     <div class="etl">
         <div><strong>Extract</strong><br>Parse Data</div>
@@ -134,8 +113,8 @@ button:hover {
         <div><strong>Load / XML</strong><br>Generate Output</div>
     </div>
 
-    <!-- Button as link -->
-    <a href="results.html"><button type="button">Submit</button></a>
+    <!-- Button goes directly to results -->
+    <a href="results.html"><button type="button">Next Step</button></a>
 </div>
 
 </body>
